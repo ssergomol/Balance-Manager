@@ -2,12 +2,17 @@ package database
 
 import (
 	"database/sql"
+
+	_ "github.com/lib/pq"
 )
 
 type Storage struct {
-	DB     *sql.DB
-	Config *ConfigDB
-	// TODO: add data repos
+	DB          *sql.DB
+	Config      *ConfigDB
+	userRepo    *UserRepo
+	orderRepo   *OrderRepo
+	balanceRepo *BalanceRepo
+	accountRepo *AccountRepo
 }
 
 func NewDB(config *ConfigDB) *Storage {
