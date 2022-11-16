@@ -10,9 +10,9 @@ type Storage struct {
 	// TODO: add data repos
 }
 
-func NewDB() Storage {
-	return Storage{
-		Config: NewConfig(),
+func NewDB(config *ConfigDB) *Storage {
+	return &Storage{
+		Config: config,
 	}
 }
 
