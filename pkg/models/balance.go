@@ -1,6 +1,6 @@
 package models
 
 type Balance struct {
-	ID  uint        `json:"id"`
-	Sum interface{} `json:"sum"`
+	ID  uint   `json:"id"`
+	Sum string `json:"sum"`
 }
