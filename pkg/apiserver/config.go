@@ -6,8 +6,8 @@ type ConfigServer struct {
 	LogLevel    string
 }
 
-func NewConfig() ConfigServer {
-	return ConfigServer{
+func NewConfig() *ConfigServer {
+	return &ConfigServer{
 		BindAddress: ":8080",
 		LogLevel:    "debug",
 	}
