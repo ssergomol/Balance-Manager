@@ -7,7 +7,7 @@ type UserRepo struct {
 }
 
 func (r *UserRepo) CreateUser(user models.User) {
-	r.store.DB.Query("INSERT INTO (balance_id, account_id, order_id) VALUES ($1, $2, $3)",
+	r.store.db.Query("INSERT INTO (balance_id, account_id, order_id) VALUES ($1, $2, $3)",
 		user.BalanceID, user.AccountID, user.OrderID,
 	)
 }

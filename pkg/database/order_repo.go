@@ -7,7 +7,7 @@ type OrderRepo struct {
 }
 
 func (r *OrderRepo) CreateOrder(order models.Order) {
-	r.store.DB.Query("INSERT INTO (service_id, price, description) VALUES ($1, $2, $3);",
+	r.store.db.Query("INSERT INTO (service_id, price, description) VALUES ($1, $2, $3);",
 		order.ServiceID, order.Price, order.Description,
 	)
 }

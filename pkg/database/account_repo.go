@@ -7,7 +7,7 @@ type AccountRepo struct {
 }
 
 func (r *AccountRepo) CreateAccount(account models.Account) {
-	r.store.DB.Query(
+	r.store.db.Query(
 		"INSERT INTO (sum) VALUES ($1)",
 		account.Sum,
 	)

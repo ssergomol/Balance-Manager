@@ -7,7 +7,7 @@ type BalanceRepo struct {
 }
 
 func (r *BalanceRepo) CreateBalance(balance models.Balance) {
-	r.store.DB.QueryRow(
+	r.store.db.QueryRow(
 		`INSERT INTO balances (sum) VALUES ($1)`,
 		balance.Sum,
 	)
