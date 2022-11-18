@@ -15,15 +15,19 @@ type APIserver struct {
 	db     *database.Storage
 }
 
-func CreateServer(config *ConfigServer) *APIserver {
+func CreateServer(config *ConfigServer) (*APIserver, error) {
 	server := &APIserver{
 		config: config,
 		router: mux.NewRouter(),
 		logger: logrus.New(),
 	}
 
-	server.configureDatabase()
-	return server
+	err := server.configureDatabase()
+	if err != nil {
+		return &APIserver{}, err
+	}
+
+	return server, nil
 }
 
 func (s *APIserver) Start() error {
@@ -51,16 +55,21 @@ func (s *APIserver) configureRouter() {
 	s.RegisterHome()
 	s.RegisterBalance()
 	s.RegisterAccount()
-	// TODO: configure other routers
+	s.RegisterTransfer()
 }
 
 func (s *APIserver) configureDatabase() error {
-	config := database.NewConfig()
+	config, err := database.NewConfig()
+	if err != nil {
+		return err
+	}
+
 	db := database.NewDB(config)
 	s.logger.Info("connecting to database")
 	if err := db.Connect(); err != nil {
 		return err
 	}
+	s.logger.Info("connection established")
 
 	s.db = db
 	return nil

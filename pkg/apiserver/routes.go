@@ -11,3 +11,7 @@ func (s *APIserver) RegisterBalance() {
 func (s *APIserver) RegisterAccount() {
 	s.router.HandleFunc("/accounts", s.AccountsHandler).Methods("POST")
 }
+
+func (s *APIserver) RegisterTransfer() {
+	s.router.HandleFunc("/accounts/transfer", s.TransferHandler).Methods("POST")
+}

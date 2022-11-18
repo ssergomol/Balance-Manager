@@ -136,3 +136,57 @@ func (s *APIserver) AccountsHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(bytes)
 }
+
+func (s *APIserver) TransferHandler(w http.ResponseWriter, r *http.Request) {
+	s.logger.Info("got transfer POST request")
+	transfer := models.Transfer{}
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		s.logger.Fatal(err)
+	}
+
+	err = json.Unmarshal([]byte(body), &transfer)
+	if err != nil {
+		s.logger.Fatal(err)
+	}
+
+	accountFrom, err := s.db.Account().GetAccountSum(transfer.FromID, transfer.FromUserID)
+	if err != nil {
+		s.logger.Fatal(err)
+	}
+	if accountFrom.Sum < transfer.Sum {
+		w.WriteHeader(http.StatusBadRequest)
+		message, err := json.Marshal("Not enough funds on the account")
+		if err != nil {
+			s.logger.Fatal(err)
+		}
+
+		w.Write(message)
+		return
+	}
+
+	_, err = s.db.Balance().GetBalance(transfer.ToUserID)
+	if err != nil {
+		s.logger.Fatal(err)
+	}
+
+	accountTo, err := s.db.Account().GetAccountSum(transfer.ToID, transfer.ToUserID)
+	if err != nil {
+		s.logger.Fatal(err)
+	}
+
+	s.db.Account().TransferFunds(accountFrom, accountTo, transfer.Sum)
+
+	accountFrom, err = s.db.Account().GetAccountSum(transfer.FromID, transfer.FromUserID)
+	accountTo, err = s.db.Account().GetAccountSum(transfer.ToID, transfer.ToUserID)
+
+	bytesFrom, err := json.Marshal(accountFrom)
+	bytesTo, err := json.Marshal(accountTo)
+	bytes := append(bytesFrom, bytesTo...)
+
+	if err != nil {
+		s.logger.Fatal(err)
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(bytes)
+}
