@@ -7,10 +7,11 @@ COPY go.sum ./
 
 RUN go mod download
 
-COPY ./cmd ./
-COPY ./pkg ./
-COPY ./reports ./
-COPY config.toml ./
+# COPY ./cmd ./
+# COPY ./pkg ./
+# COPY ./reports ./
+# COPY config.toml ./
+COPY . .
 
 RUN go build -o /balance-manager
 CMD [ "/balance-manager" ]
