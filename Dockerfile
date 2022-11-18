@@ -14,4 +14,7 @@ RUN go mod download
 COPY . .
 
 RUN go build -o balance-manager cmd/main.go
+
+EXPOSE 8080
+
 CMD [ "/balance-manager" ]
