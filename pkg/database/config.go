@@ -18,8 +18,10 @@ func NewConfig() (*ConfigDB, error) {
 		return &ConfigDB{}, err
 	}
 
-	dbServer := "host=" + config.Get("store.host").(string) + " sslmode=" + config.Get("store.sslmode").(string)
-	fullURL := "host=" + config.Get("store.host").(string) + " dbname=" + config.Get("store.dbname").(string) + " sslmode=" + config.Get("store.sslmode").(string)
+	dbServer := "host=" + config.Get("store.host").(string) + " user=" + config.Get("store.user").(string) +
+		" password=" + config.Get("store.password").(string) + " sslmode=" + config.Get("store.sslmode").(string)
+	fullURL := "host=" + config.Get("store.host").(string) + " user=" + config.Get("store.user").(string) +
+		" password=" + config.Get("store.password").(string) + " dbname=" + config.Get("store.dbname").(string) + " sslmode=" + config.Get("store.sslmode").(string)
 
 	return &ConfigDB{
 		dbServer: dbServer,
