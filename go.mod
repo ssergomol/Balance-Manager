@@ -11,6 +11,8 @@ require (
 )
 
 require (
+	github.com/BurntSushi/toml v1.2.1 // indirect
+	github.com/pelletier/go-toml v1.9.5 // indirect
 	golang.org/x/sys v0.0.0-20220728004956-3c1f35247d10 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 )
