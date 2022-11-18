@@ -22,7 +22,19 @@ func NewDB(config *ConfigDB) *Storage {
 }
 
 func (s *Storage) Connect() error {
-	db, err := sql.Open("postgres", s.config.databaseURL)
+	db, err := sql.Open("postgres", s.config.dbServer)
+	if err != nil {
+		return err
+	}
+
+	_, err = db.Exec("CREATE DATABASE " + s.config.dbName)
+	if err != nil {
+		return err
+	}
+
+	db.Close()
+
+	db, err = sql.Open("postgres", s.config.dbURL)
 	if err != nil {
 		return err
 	}
@@ -33,7 +45,8 @@ func (s *Storage) Connect() error {
 	}
 
 	s.db = db
-	return nil
+
+	return LoadSQLFile(s.db)
 }
 
 func (s *Storage) Disconnect() error {

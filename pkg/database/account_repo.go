@@ -108,3 +108,23 @@ func (r *AccountRepo) GetAccountSum(id uint, userID uint) (models.Account, error
 	}
 	return account, nil
 }
+
+func (r *AccountRepo) TransferFunds(from models.Account, to models.Account, sum string) error {
+	fromSum, err := decimal.NewFromString(from.Sum)
+	if err != nil {
+		return err
+	}
+
+	toSum, err := decimal.NewFromString(to.Sum)
+	if err != nil {
+		return err
+	}
+
+	deltaSum, err := decimal.NewFromString(sum)
+	if err != nil {
+		return err
+	}
+	r.store.db.QueryRow("UPDATE accounts SET sum = $1 WHERE id = $2", fromSum.Sub(deltaSum).String(), from.ID)
+	r.store.db.QueryRow("UPDATE accounts SET sum = $1 WHERE id = $2", toSum.Add(deltaSum).String(), to.ID)
+	return nil
+}
