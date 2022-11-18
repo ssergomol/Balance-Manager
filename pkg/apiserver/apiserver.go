@@ -56,6 +56,7 @@ func (s *APIserver) configureRouter() {
 	s.RegisterBalance()
 	s.RegisterAccount()
 	s.RegisterTransfer()
+	s.RegisterReport()
 }
 
 func (s *APIserver) configureDatabase() error {

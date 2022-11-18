@@ -154,6 +154,7 @@ func (s *APIserver) TransferHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		s.logger.Fatal(err)
 	}
+
 	if accountFrom.Sum < transfer.Sum {
 		w.WriteHeader(http.StatusBadRequest)
 		message, err := json.Marshal("Not enough funds on the account")
@@ -189,4 +190,32 @@ func (s *APIserver) TransferHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(bytes)
+}
+
+func (s *APIserver) ReportHandler(w http.ResponseWriter, r *http.Request) {
+	s.logger.Info("got report GET request")
+	date := models.Date{}
+
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		s.logger.Fatal(err)
+	}
+
+	err = json.Unmarshal([]byte(body), &date)
+	if err != nil {
+		s.logger.Fatal(err)
+	}
+
+	path, err := s.db.Order().GetReport(date.Date)
+	if err != nil {
+		s.logger.Fatal(err)
+	}
+
+	message, err := json.Marshal("report " + path + " created")
+	if err != nil {
+		s.logger.Fatal(err)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(message)
 }
