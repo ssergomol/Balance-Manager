@@ -1,49 +1,87 @@
 version: "3.8"
 
-
 services:
   app:
-    container_name: balance-manager
+    container_name: full_app
+    build: .
+    ports: 
+      - 8080:8080 
+    restart: on-failure
+    volumes:
+      - api:/usr/src/app/
+    depends_on:
+      - fullstack-postgres          # Uncomment this when using postgres.
+    networks:
+      - fullstack
+
+
+  fullstack-postgres:
+    image: postgres:latest
+    container_name: full_db_postgres
     environment:
-      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_USER=${DB_USER}  
       - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - DATABASE_HOST=${DB_HOST} 
+    ports:
+      - '5432:5432'
+    volumes:
+      - database_postgres:/var/lib/postgresql/data
+    networks:
+      - fullstack
+
+volumes:
+  api:
+  database_postgres:                  # Uncomment this when using postgres.
+
+# Networks to be created to facilitate communication between containers
+networks:
+  fullstack:
+    driver: bridge
+
+
+# services:
+#   app:
+#     container_name: balance-manager
+#     environment:
+      # - POSTGRES_USER=${DB_USER}
+      # - POSTGRES_PASSWORD=${DB_PASSWORD}
       # - POSTGRES_DB=${DB_NAME}
-      - DATABASE_HOST=${DB_HOST}
-      - DATABASE_PORT=${DB_PORT}
+      # - DATABASE_HOST=${DB_HOST}
+      # - DATABASE_PORT=${DB_PORT}
       # - TEST_POSTGRES_USER=${TEST_DB_USER}
       # - TEST_POSTGRES_PASSWORD=${TEST_DB_PASSWORD}
       # - TEST_POSTGRES_DB=${TEST_DB_NAME}
       # - TEST_DATABASE_HOST=${TEST_DB_HOST}
       # - TEST_DATABASE_PORT=${TEST_DB_PORT}
-    tty: true
-    build: .
-    ports:
-      - 8080:8080
-    restart: on-failure
-    volumes:
-      - .:/app
-    depends_on:
-      - postgresdb
-    networks:
-      - learning
+  #   tty: true
+  #   build: .
+  #   ports:
+  #     - 8080:8080
+  #   restart: on-failure
+  #   volumes:
+  #     - .:/app
+  #   depends_on:
+  #     - postgresdb
+  #   networks:
+  #     - learning
 
-  postgresdb:
-    image: postgres:latest
-    container_name: postgres_container
-    environment:
-      - POSTGRES_USER=${DB_USER}
+  # postgresdb:
+  #   image: postgres:latest
+  #   container_name: postgres_container
+  #   environment:
+      # - POSTGRES_USER=${DB_USER}
     #   - POSTGRES_PASSWORD=${DB_PASSWORD}
     #   - POSTGRES_DB=${DB_NAME}
     #   - DATABASE_HOST=${DB_HOST}
-    ports:
-      - '1234:5432'
-    networks:
-      - learning
+    # ports:
+    #   - '1234:5432'
+    # networks:
+    #   - learning
 
 # Networks to be created to facilitate communication between containers
-networks:
-  learning:
-    driver: bridge
+# networks:
+#   learning:
+#     driver: bridge
 
 # volumes:
 #   - .:/app
