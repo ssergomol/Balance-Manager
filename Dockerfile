@@ -11,7 +11,7 @@ RUN go mod download
 # COPY ./pkg ./
 # COPY ./reports ./
 # COPY config.toml ./
-COPY . .
+COPY . ./
 
 RUN go build -o balance-manager cmd/main.go
 
