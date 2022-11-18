@@ -1,4 +1,3 @@
-# Balance-Manager
 <a id="readme-top"></a>
 
 <br />
