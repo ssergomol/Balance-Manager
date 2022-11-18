@@ -26,6 +26,19 @@ func (r *BalanceRepo) ReplenishBalance(balance models.Balance) error {
 				`INSERT INTO balances (user_id, sum) VALUES ($1, $2)`,
 				balance.ID, balance.Sum,
 			)
+
+			orderFrom := models.Order{
+				UserID:      balance.ID,
+				ServiceID:   4,
+				IsPositive:  true,
+				Price:       balance.Sum,
+				Description: "Replenish balance",
+			}
+
+			err = r.store.Order().CreateOrder(orderFrom)
+			if err != nil {
+				return err
+			}
 			return nil
 		}
 		return err
@@ -47,6 +60,19 @@ func (r *BalanceRepo) ReplenishBalance(balance models.Balance) error {
 	newSum := sum.Add(deltaSum)
 
 	r.store.db.QueryRow("UPDATE balances SET sum = $1 WHERE user_id = $2", newSum.String(), balance.ID)
+
+	orderFrom := models.Order{
+		UserID:      balance.ID,
+		ServiceID:   4,
+		IsPositive:  true,
+		Price:       balance.Sum,
+		Description: "Replenish balance",
+	}
+
+	err = r.store.Order().CreateOrder(orderFrom)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

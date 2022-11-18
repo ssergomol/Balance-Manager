@@ -50,6 +50,19 @@ func (r *AccountRepo) ReserveFunds(account models.Account) error {
 					account.ID, account.UserID, account.Sum,
 				)
 
+				order := models.Order{
+					UserID:      account.UserID,
+					ServiceID:   1,
+					IsPositive:  true,
+					Price:       "0.00",
+					Description: "Reserve funds from balance to the account",
+				}
+
+				err = r.store.Order().CreateOrder(order)
+				if err != nil {
+					return err
+				}
+
 				return nil
 			}
 			return err
@@ -60,6 +73,19 @@ func (r *AccountRepo) ReserveFunds(account models.Account) error {
 			return err
 		}
 		r.store.db.QueryRow("UPDATE accounts SET sum = $1 WHERE id = $2", accountSum.Add(deltaSum).String(), account.ID)
+
+		order := models.Order{
+			UserID:      account.UserID,
+			ServiceID:   1,
+			IsPositive:  true,
+			Price:       "0.00",
+			Description: "Reserve funds from balance to the account",
+		}
+
+		err = r.store.Order().CreateOrder(order)
+		if err != nil {
+			return err
+		}
 
 	// Debit funds from the account
 	case 2:
@@ -79,6 +105,19 @@ func (r *AccountRepo) ReserveFunds(account models.Account) error {
 		}
 
 		r.store.db.QueryRow("UPDATE accounts SET sum = $1 WHERE id = $2", accountSum.Sub(deltaSum).String(), account.ID)
+
+		order := models.Order{
+			UserID:      account.UserID,
+			ServiceID:   2,
+			IsPositive:  false,
+			Price:       "-" + account.Sum,
+			Description: "Debit funds from the account",
+		}
+
+		err = r.store.Order().CreateOrder(order)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -126,5 +165,31 @@ func (r *AccountRepo) TransferFunds(from models.Account, to models.Account, sum 
 	}
 	r.store.db.QueryRow("UPDATE accounts SET sum = $1 WHERE id = $2", fromSum.Sub(deltaSum).String(), from.ID)
 	r.store.db.QueryRow("UPDATE accounts SET sum = $1 WHERE id = $2", toSum.Add(deltaSum).String(), to.ID)
+
+	orderFrom := models.Order{
+		UserID:      from.UserID,
+		ServiceID:   3,
+		IsPositive:  false,
+		Price:       "-" + sum,
+		Description: "Transfer funds",
+	}
+
+	err = r.store.Order().CreateOrder(orderFrom)
+	if err != nil {
+		return err
+	}
+
+	orderTo := models.Order{
+		UserID:      to.UserID,
+		ServiceID:   3,
+		IsPositive:  true,
+		Price:       sum,
+		Description: "Transfer funds",
+	}
+
+	err = r.store.Order().CreateOrder(orderTo)
+	if err != nil {
+		return err
+	}
 	return nil
 }
