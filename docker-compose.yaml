@@ -5,14 +5,10 @@ services:
     container_name: postgres
     image: postgres:latest
 
-  environment:
-  - POSTGRES_USER=${DB_USER}
-  - POSTGRES_PASSWORD=${DB_PASSWORD}
-
-  ports:
-    - 8080:8080
-  volumes:
-    - dbdata:/var/lib/postgresql/data 
+    ports:
+      - 8080:8080
+    volumes:
+      - dbdata:/var/lib/postgresql/data 
   
   go:
     container_name: go
