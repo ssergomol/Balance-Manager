@@ -3,10 +3,10 @@
 
 <br />
 <div align="center">
-  <a href="https://github.com/ssergomol/Realtime-Chat">
+  <a href="https://github.com/ssergomol/Balance-Manager">
 </a>
 
-<h3 align="center">Real-time chat application</h3>
+<h3 align="center">Balance Manager</h3>
 </div>
 
 
