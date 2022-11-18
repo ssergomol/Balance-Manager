@@ -50,6 +50,7 @@ func (s *APIserver) configureLogger() error {
 func (s *APIserver) configureRouter() {
 	s.RegisterHome()
 	s.RegisterBalance()
+	s.RegisterAccount()
 	// TODO: configure other routers
 }
 

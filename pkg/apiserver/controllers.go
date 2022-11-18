@@ -70,3 +70,69 @@ func (s *APIserver) BalanceHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write(bytes)
 	}
 }
+
+func (s *APIserver) AccountsHandler(w http.ResponseWriter, r *http.Request) {
+	s.logger.Info("got accounts POST request")
+	account := models.Account{}
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		s.logger.Fatal(err)
+	}
+
+	err = json.Unmarshal([]byte(body), &account)
+	if err != nil {
+		s.logger.Fatal(err)
+	}
+
+	switch account.ServiceID {
+	// Debit funds from the balance
+	case 1:
+		balance, err := s.db.Balance().GetBalance(account.UserID)
+		if err != nil {
+			s.logger.Fatal(err)
+		}
+
+		if balance.Sum < account.Sum {
+			w.WriteHeader(http.StatusBadRequest)
+			message, err := json.Marshal("Not enough funds on the balance")
+			if err != nil {
+				s.logger.Fatal(err)
+			}
+
+			w.Write(message)
+			return
+		}
+
+	// Debit funds from the account
+	case 2:
+		acc, err := s.db.Account().GetAccountSum(account.ID, account.UserID)
+		if err != nil {
+			s.logger.Fatal(err)
+		}
+
+		if acc.Sum < account.Sum {
+			w.WriteHeader(http.StatusBadRequest)
+			message, err := json.Marshal("Not enough funds on the account")
+			if err != nil {
+				s.logger.Fatal(err)
+			}
+
+			w.Write(message)
+			return
+		}
+
+	}
+
+	s.db.Account().ReserveFunds(account)
+
+	if err != nil {
+		s.logger.Fatal(err)
+	}
+
+	bytes, err := json.Marshal(account)
+	if err != nil {
+		s.logger.Fatal(err)
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(bytes)
+}
