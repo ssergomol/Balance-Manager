@@ -1,5 +1,5 @@
 CREATE TABLE accounts(
-    id SERIAL PRIMARY KEY,
-    user_id SERIAL REFERENCES users(id),
+    id INTEGER PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id),
     sum NUMERIC(18, 2)
 );
