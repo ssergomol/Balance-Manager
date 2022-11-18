@@ -33,16 +33,9 @@ func (r *OrderRepo) GetReport(date string) (string, error) {
 	}
 	defer rows.Close()
 
-	// f, err := os.Create("reports/report_" + year + "_" + month)
-	// if err != nil {
-	// 	return path, err
-	// }
-	// f.Close()
-
 	err = sqltocsv.WriteFile(path, rows)
 	if err != nil {
 		return path, err
 	}
-
 	return path, nil
 }
