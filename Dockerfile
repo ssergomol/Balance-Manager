@@ -7,7 +7,7 @@ COPY go.sum ./
 
 RUN go mod download
 
-COPY . /app/
+COPY . ./
 
 RUN go build -o /balance-manager
 CMD [ "/balance-manager" ]
