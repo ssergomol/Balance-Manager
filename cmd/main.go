@@ -6,8 +6,14 @@ import (
 )
 
 func main() {
-	config := apiserver.NewConfig()
-	server := apiserver.CreateServer(config)
+	config, err := apiserver.NewConfig()
+	if err != nil {
+		logrus.Fatal(err)
+	}
+	server, err := apiserver.CreateServer(config)
+	if err != nil {
+		logrus.Fatal(err)
+	}
 
 	if err := server.Start(); err != nil {
 		logrus.Fatal(err)
