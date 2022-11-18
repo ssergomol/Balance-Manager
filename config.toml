@@ -2,6 +2,6 @@ bind_addr = ":8080"
 log_level = "debug"
 
 [store]
-host = "localhost"
+host = "host.docker.internal"
 dbname = "balance_manager"
 sslmode = "disable"
