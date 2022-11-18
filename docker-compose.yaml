@@ -6,10 +6,10 @@ services:
     container_name: balance-manager
     environment:
       - POSTGRES_USER=${DB_USER}
-      # - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
       # - POSTGRES_DB=${DB_NAME}
-      # - DATABASE_HOST=${DB_HOST}
-      # - DATABASE_PORT=${DB_PORT}
+      - DATABASE_HOST=${DB_HOST}
+      - DATABASE_PORT=${DB_PORT}
       # - TEST_POSTGRES_USER=${TEST_DB_USER}
       # - TEST_POSTGRES_PASSWORD=${TEST_DB_PASSWORD}
       # - TEST_POSTGRES_DB=${TEST_DB_NAME}
@@ -45,8 +45,8 @@ networks:
   learning:
     driver: bridge
 
-volumes:
-  - .:/app
+# volumes:
+#   - .:/app
 
 # services:
 #   postgres:
