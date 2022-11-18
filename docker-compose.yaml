@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+  ports:
+    - "8080:8080"
+  volumes:
+    - dbdata:/var/lib/postgresql/data 
+  
+  go:
+    container_name: go
+    volumes:
+      - .:/app
+
+volumes:
+  dbdata:
