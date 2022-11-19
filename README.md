@@ -34,7 +34,7 @@
 <!-- ## About the project -->
 ## Описание проекта
 
-Сервис для управления балансом пользователей, который позволяет осуществлять денежные операции, такие как зачисление средств, списание средств, перевод средств от пользователя к пользователю, а также получение баланса пользователя.
+Сервис для управления балансом и счетами пользователей, который позволяет осуществлять основные денежные операции
 <!-- Service for managing users' balance which allows the money operations such as crediting funds, debiting funds, transferring funds from user to user as well as  obtaining the user's balance -->
 
 <!-- TECHNOLOGIES -->
@@ -63,7 +63,11 @@
 <!-- ## Installation -->
 ## Установка и запуск сервера
 1. Установите Docker и docker-compose для своей ОС https://docs.docker.com/compose/install/
-2. Выполните
+2. Склонируйте репозиторий и перейдите в корень проекта
+```
+git clone https://github.com/ssergomol/Balance-Manager.git && cd ./Balance-Manager
+```
+3. Выполните
 ```sh
 docker-compose up
 ```
@@ -149,7 +153,7 @@ curl --header "Content-Type: application/json" \
   http://localhost:8080/balance
 ```
 
-Тело ответа (возвращает id пользователя и его баланс):
+Тело ответа (в случае успеха возвращает id пользователя и его баланс):
 ```
 { 
     "id": 0,
@@ -168,7 +172,7 @@ curl --header "Content-Type: application/json" \
   http://localhost:8080/accounts/transfer
 ```
 
-Тело ответа (возвращает ID счетов, ID пользовтелей и их остатки на счетах после перевода)
+Тело ответа (в случае успеха возвращает ID счетов, ID пользовтелей и их остатки на счетах после перевода)
 ```
 {
     "id": 0,
@@ -195,7 +199,7 @@ curl --header "Content-Type: application/json" \
   http://localhost:8080/report
 ```
 
-Тело ответа (возвращает путь, где был создан отчёт в формате csv файла)\
+Тело ответа (в случае успеха возвращает путь, где был создан отчёт в формате csv файла)\
 Все отчёты сохраняются в папке reports/
 ```
 "report reports/report_2022_11 created"
