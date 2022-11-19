@@ -14,97 +14,196 @@
 
 <!-- TABLE OF CONTENTS -->
 <details>
-  <summary>Table of Contents</summary>
+  <summary>Содержание</summary>
   <ol>
     <li>
-      <a href="#about-the-project">About The Project</a>
+      <a href="#описание-проекта">Описание проекта</a>
       <ul>
-        <li><a href="#technologies">Technologies</a></li>
+        <li><a href="#технологии">Технологии</a></li>
       </ul>
     </li>
-    <li><a href="#features-and-used-implementations">Features</a></li>
+    <li><a href="#возможности-сервиса">Возможности сервиса</a></li>
     <li>
-      <a href="#installation">Installation</a>
-      <ul>
-        <li><a href="#server-setup">Server setup</a></li>
-        <li><a href="#client-setup">Client setup</a></li>
-      </ul>
+      <a href="#установка-и-запуск-сервера">Установка и запуск сервера</a>
     </li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#контакты">Контакты</a></li>
   </ol>
 </details>
 
 <!-- ABOUT THE PROJECT -->
-## About the project
+<!-- ## About the project -->
+## Описание проекта
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
-Service for managing users' balance which allows the money operations such as crediting funds, debiting funds, transferring funds from user to user as well as  obtaining the user's balance
+Сервис для управления балансом пользователей, который позволяет осуществлять денежные операции, такие как зачисление средств, списание средств, перевод средств от пользователя к пользователю, а также получение баланса пользователя.
+<!-- Service for managing users' balance which allows the money operations such as crediting funds, debiting funds, transferring funds from user to user as well as  obtaining the user's balance -->
 
 <!-- TECHNOLOGIES -->
-### Technologies
+### Технологии
+<!-- ### Technologies -->
 
 * [![GoLang-logo]][GoLang-url]
-* [![React-logo]][React-url]
 * [![PostgreSQL-logo]][PostgreSQL-url]
-* [![JavaScript-logo]][JavaScript-url]
+* [![Docker-logo]][Docker-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- Features -->
-## Features and implementations
+<!-- ## Features and implementations -->
+## Возможности сервиса
 
-* Real‐time messaging for multiple users (Used WebSocket protocol for connection, goroutines and channel for asynchronous operation)
-* Authorization and authentication (By storing JSON Web Tokens in Cookies)
-* Users' Database (Implemented using GORM ORM library and PostgreSQL)
+* Зачисление средств на баланс
+* Резервирование средств с основного баланса на отдельном счете
+* Cписание денег из резерва
+* Получение баланса пользователя
+* Перевод средств от пользователя к пользователю
+* Получение отчёта по выручке среди всех пользователей для каждой операции за заданный месяц
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- ## Installation -->
+## Установка и запуск сервера
+1. Установите Docker и docker-compose для своей ОС https://docs.docker.com/compose/install/
+2. Выполните
+```sh
+docker-compose up
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Installation
+## Примеры запросов и возможные ответы
+1. Метод зачисление средств на баланс
+Принимает ID пользователя и сумму зачисления
 
-### Server setup
+Запрос:
 
-1. Go version 1.16 or greater installed. To set this up, visit the https://go.dev/doc/install to install it for your operation system
-
-2. In case you are setting up the server, it will be required to use PostgreSQL database server, visit https://www.postgresql.org/download/ and follow the installation instructions
-
-3. Clone the repo
-```sh
-git clone https://github.com/ssergomol/Realtime-Chat
+```
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data \
+  '{ "id": 0, "sum":"1000.00" }' \
+  http://localhost:8080/balance
 ```
 
-4. By default server tries to connect to database ```realtimechat``` using your system username. To change connection parametres, go through the ```backend/pkg/database/connection.go``` file
+Тело ответа (совпадает с телом ответа в случае успеха):
 
-4. Install dependencies
-```sh
-go mod download
+```
+{
+    "id": 0,
+    "sum": 1000.00
+}
 ```
 
-5. Start server
-```sh
-# cd backend/cmd
-go run main.go
+2. Метод резервирования средств с основного баланса на отдельном счете
+Принимает ID пользователя, ID услуги, ID счёта и сумму резервирования, причём ID услуги равен 1
+
+Запрос:
+```
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data \
+  '{ "id": 0, "user_id": 0, "service_id": 1, "sum":"1000.00"}' \
+  http://localhost:8080/accounts
 ```
 
-### Client setup
-
-1. Install node package manager
-```sh
-npm install npm@latest -g
+Тело ответа (совпадает с телом ответа в случае успеха):
+```
+{
+    "id": 0,
+    "user_id": 0,
+    "service_id": 1,
+    "sum":"1000.00"
+}
 ```
 
-2. Start React server
-```sh
-# cd frontend
-npm start
+3. Метод списания денег из резерва
+Принимает ID пользователя, ID услуги, ID счёта и сумму резервирования, причём ID услуги равен 2
+
+
+Запрос:
+```
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data \
+  '{ "id": 0, "user_id": 0, "service_id": 2, "sum":"100.00"}' \
+  http://localhost:8080/accounts
 ```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+Тело ответа (совпадает с телом ответа в случае успеха):
+```
+{
+    "id": 0,
+    "user_id": 0,
+    "service_id": 2,
+    "sum":"100.00"
+}
+```
+
+4. Метод получения баланса пользователя
+Принимает id пользователя
+Запрос:
+```
+curl --header "Content-Type: application/json" \
+  --request GET \
+  --data \
+  '{ "id": 0 }' \
+  http://localhost:8080/balance
+```
+
+Тело ответа (возвращает id пользователя и его баланс):
+```
+{ 
+    "id": 0,
+    "sum": "1000.00"
+}
+```
+
+5. Метод перевода средств от одного пользователя к другому
+Принимает ID каждого из пользовтелей, ID счетов каждого из пользователей и сумму перевода
+
+```
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data \
+  '{ "from_id": 0, "from_user_id": 0, "to_id": 1, "to_user_id": 1, "sum": "50.00" }' \
+  http://localhost:8080/accounts/transfer
+```
+
+Тело ответа (возвращает ID счетов, ID пользовтелей и их остатки на счетах после перевода)
+```
+{
+    "id": 0,
+    "user_id": 0,
+    "service_id": 0,
+    "sum":"850.00"
+}
+{
+    "id": 1,
+    "user_id": 1,
+    "service_id": 0,
+    "sum":"50.00"
+}
+```
+
+6. Метод получения отчёта по выручке среди всех пользователей для каждой операции за заданный месяц
+Принимает период в формате "год-месяц", за который необходимо получить отчёт
+
+```
+curl --header "Content-Type: application/json" \
+  --request GET \
+  --data \
+  '{ "date": "2022-11" }' \
+  http://localhost:8080/report
+```
+
+Тело ответа (возвращает путь, где был создан отчёт в формате csv файла)\
+Все отчёты сохраняются в папке reports/
+```
+"report reports/report_2022_11 created"
+```
 
 
 <!-- CONTRIBUTING -->
-## Contributing
+<!-- ## Contributing
 
 If you have any intentions that would make this project better, fork the repo and create pull request
 
@@ -114,16 +213,17 @@ If you have any intentions that would make this project better, fork the repo an
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#readme-top">back to top</a>)</p> -->
 
 
 
 <!-- CONTACT -->
-## Contact
+<!-- ## Contact -->
+## Контакты
 
-Sergey Molchanov - @ssergomol - ssergomoll@gmail.com
+Сергей Молчанов - @ssergomol - ssergomoll@gmail.com
 
-Project Link: [https://github.com/ssergomol/Realtime-Chat](https://github.com/ssergomol/Realtime-Chat)
+Ссылка на проект: [https://github.com/ssergomol/Balance-Manager](https://github.com/ssergomol/Balance-Manager)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -136,3 +236,5 @@ Project Link: [https://github.com/ssergomol/Realtime-Chat](https://github.com/ss
 [PostgreSQL-logo]: https://img.shields.io/badge/PostgreSQL-ffffff?style=for-the-badge&logo=PostgreSQL&logoColor=008bb9
 [JavaScript-url]: https://javascript.com
 [JavaScript-logo]: https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=f0db4f
+[Docker-logo]: https://img.shields.io/badge/Docker-ffffff?style=for-the-badge&logo=docker&logoColor=0db7ed
+[Docker-url]: https://www.docker.com/
